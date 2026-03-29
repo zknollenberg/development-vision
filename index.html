@@ -89,15 +89,15 @@
       <div class="hidden md:flex items-center gap-5 text-xs text-on-surface-variant">
         <div class="text-center">
           <div class="font-headline font-bold text-primary text-sm" id="hdr-pop">~54,000</div>
-          <div class="text-[9px] uppercase tracking-wider text-outline">Population</div>
+          <div class="text-[9px] uppercase tracking-wider text-outline" id="hdr-pop-label">Population</div>
         </div>
         <div class="text-center">
           <div class="font-headline font-bold text-primary text-sm" id="hdr-schools">7</div>
-          <div class="text-[9px] uppercase tracking-wider text-outline">Schools</div>
+          <div class="text-[9px] uppercase tracking-wider text-outline" id="hdr-schools-label">Schools</div>
         </div>
         <div class="text-center">
           <div class="font-headline font-bold text-primary text-sm" id="hdr-new">4</div>
-          <div class="text-[9px] uppercase tracking-wider text-outline">New in Year</div>
+          <div class="text-[9px] uppercase tracking-wider text-outline" id="hdr-new-label">New in Year</div>
         </div>
       </div>
 
@@ -205,7 +205,7 @@
           </div>
         </div>
 
-        <div class="mt-4">
+        <div class="mt-4" id="curated-jump-shell">
           <div class="flex items-center justify-between mb-2">
             <div class="text-[10px] font-bold uppercase tracking-[0.15em] text-outline">Quick Jump</div>
             <div class="text-[10px] text-outline">Open a sector</div>
@@ -235,6 +235,9 @@
         </div>
       </div>
       <div id="filter-bar" class="flex flex-col gap-2"></div>
+      <div id="curated-filter-note" class="hidden text-xs text-outline mt-3 leading-relaxed">
+        The 2026 baseline hides inferred development overlays and shows only geometry sourced from Celina's public GIS.
+      </div>
       <div class="mt-4 pt-4" style="border-top: 1px solid rgba(9,20,38,0.06);">
         <div class="text-[10px] font-bold uppercase tracking-[0.15em] text-secondary mb-1">Public GIS Layers</div>
         <div class="text-xs text-outline mb-3">Live ArcGIS layers from the City of Celina public GIS portal.</div>
@@ -263,7 +266,7 @@
           <div class="font-headline font-extrabold text-primary leading-none" style="font-size: 3rem;" id="year-display">2026</div>
         </div>
         <div id="delta-summary" class="text-right">
-          <div class="text-[10px] text-outline uppercase tracking-wider mb-1">Opening This Year</div>
+          <div class="text-[10px] text-outline uppercase tracking-wider mb-1" id="delta-label">Opening This Year</div>
           <div class="font-headline font-bold text-secondary text-lg" id="delta-count">-</div>
         </div>
       </div>
@@ -291,7 +294,7 @@
         <span class="text-[10px] font-semibold text-outline">2040</span>
       </div>
 
-      <div class="flex items-center gap-4 mt-3 pt-3" style="border-top: 1px solid rgba(9,20,38,0.06);">
+      <div class="flex items-center gap-4 mt-3 pt-3" id="timeline-legend" style="border-top: 1px solid rgba(9,20,38,0.06);">
         <div class="flex items-center gap-1.5 text-[10px] text-on-surface-variant">
           <span class="w-2 h-2 rounded-full bg-[#16A34A]"></span> Open
         </div>

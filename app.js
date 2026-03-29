@@ -75,7 +75,7 @@ const PUBLIC_GIS_LAYERS = {
     serviceUrl: "https://services1.arcgis.com/x4nhme9V33KOzAfr/arcgis/rest/services/ETJ_Celina/FeatureServer",
     layerId: 0,
     geometryType: "polygon",
-    defaultVisible: false,
+    defaultVisible: true,
     color: "#6b7280",
     fillColor: "#94a3b8",
     fillOpacity: 0.03,
@@ -95,7 +95,7 @@ const PUBLIC_GIS_LAYERS = {
     serviceUrl: "https://services1.arcgis.com/x4nhme9V33KOzAfr/arcgis/rest/services/FutureLandusePlan2021/FeatureServer",
     layerId: 0,
     geometryType: "polygon",
-    defaultVisible: false,
+    defaultVisible: true,
     color: "#0f766e",
     fillColor: "#0f766e",
     fillOpacity: 0.12,
@@ -113,7 +113,7 @@ const PUBLIC_GIS_LAYERS = {
     serviceUrl: "https://services1.arcgis.com/x4nhme9V33KOzAfr/arcgis/rest/services/SubdivisionsbyDA/FeatureServer",
     layerId: 0,
     geometryType: "polygon",
-    defaultVisible: false,
+    defaultVisible: true,
     color: "#db2777",
     fillColor: "#db2777",
     fillOpacity: 0.08,
@@ -880,6 +880,10 @@ const map = L.map("map", {
 
 L.control.zoom({ position: "bottomright" }).addTo(map);
 
+function isCuratedOverlayActive() {
+  return currentYear >= 2027;
+}
+
 function setMapStyle(style) {
   if (style === "satellite") {
     map.removeLayer(streetTile);
@@ -993,7 +997,35 @@ function buildSectors() {
   });
 }
 
+function syncCuratedOverlayVisibility() {
+  const active = isCuratedOverlayActive();
+
+  Object.values(sectorLayers).forEach((layer) => {
+    if (active) {
+      if (!map.hasLayer(layer)) layer.addTo(map);
+    } else if (map.hasLayer(layer)) {
+      map.removeLayer(layer);
+    }
+  });
+
+  if (!active) {
+    Object.values(markerLayers).forEach((marker) => {
+      if (map.hasLayer(marker)) map.removeLayer(marker);
+    });
+    markerLayers = {};
+    if (activeSectorId) closeDrawer();
+  } else {
+    refreshSectorColors();
+    buildMarkers();
+  }
+
+  document.getElementById("filter-bar").style.display = active ? "flex" : "none";
+  document.getElementById("curated-filter-note").classList.toggle("hidden", active);
+  document.getElementById("curated-jump-shell").style.display = active ? "block" : "none";
+}
+
 function refreshSectorColors() {
+  if (!isCuratedOverlayActive()) return;
   SECTORS.forEach((sector) => {
     const cat = CATS[sector.category];
     const activity = sectorActivityLevel(sector, currentYear);
@@ -1011,6 +1043,7 @@ function refreshSectorColors() {
 }
 
 function buildMarkers() {
+  if (!isCuratedOverlayActive()) return;
   Object.values(markerLayers).forEach((marker) => {
     if (map.hasLayer(marker)) map.removeLayer(marker);
   });
@@ -1282,6 +1315,14 @@ function renderAudiencePanel() {
 
 function renderInsightStory() {
   const meta = YEAR_META[currentYear];
+  if (!isCuratedOverlayActive()) {
+    document.getElementById("insight-phase").textContent = "Official GIS Baseline";
+    document.getElementById("insight-phase-desc").textContent = "The 2026 map is constrained to geometry exposed through Celina's public ArcGIS services so boundaries and zones are source-backed rather than hand-drawn.";
+    document.getElementById("insight-story-title").textContent = "Source-only 2026 view";
+    document.getElementById("insight-story-body").textContent = "City limits, ETJ, future land use, communities, parks, trails, schools, city facilities, and capital projects are the active 2026 baseline. Curated development storytelling begins in 2027.";
+    return;
+  }
+
   const openings = getNewProjects(currentYear);
   const storyTitle = openings.length === 0 ? "No major tracked openings" : `${openings.length} notable opening${openings.length === 1 ? "" : "s"}`;
   let storyBody = openings.length === 0
@@ -1312,21 +1353,26 @@ function updateSliderTrack() {
 function updateYear() {
   const meta = YEAR_META[currentYear];
   const newCount = countNewThisYear(currentYear);
+  const curatedActive = isCuratedOverlayActive();
 
   document.getElementById("year-display").textContent = currentYear;
   document.getElementById("header-year-badge").textContent = `Viewing: ${currentYear}`;
-  document.getElementById("phase-label").textContent = meta.phase;
-  document.getElementById("hdr-pop").textContent = meta.pop;
-  document.getElementById("hdr-schools").textContent = meta.schools;
-  document.getElementById("hdr-new").textContent = newCount;
-  document.getElementById("delta-count").textContent = newCount > 0 ? `${newCount} projects` : "-";
+  document.getElementById("phase-label").textContent = curatedActive ? meta.phase : "Official GIS Baseline";
+  document.getElementById("hdr-pop").textContent = curatedActive ? meta.pop : "Official";
+  document.getElementById("hdr-pop-label").textContent = curatedActive ? "Population" : "Baseline";
+  document.getElementById("hdr-schools").textContent = curatedActive ? meta.schools : Object.keys(PUBLIC_GIS_LAYERS).length;
+  document.getElementById("hdr-schools-label").textContent = curatedActive ? "Schools" : "GIS Layers";
+  document.getElementById("hdr-new").textContent = curatedActive ? newCount : "2026";
+  document.getElementById("hdr-new-label").textContent = curatedActive ? "New in Year" : "Source Year";
+  document.getElementById("delta-label").textContent = curatedActive ? "Opening This Year" : "Mode";
+  document.getElementById("delta-count").textContent = curatedActive ? (newCount > 0 ? `${newCount} projects` : "-") : "Source-Only";
+  document.getElementById("timeline-legend").style.display = curatedActive ? "flex" : "none";
 
   updateSliderTrack();
-  refreshSectorColors();
-  buildMarkers();
+  syncCuratedOverlayVisibility();
   renderInsightStory();
 
-  if (currentYear !== prevYear) {
+  if (curatedActive && currentYear !== prevYear) {
     const gains = getNewProjects(currentYear).map((item) => item.dev.name);
     if (gains.length > 0) {
       showToast(gains.length === 1 ? `${gains[0]} opens in ${currentYear}` : `${gains.length} projects open in ${currentYear}`);
@@ -1340,6 +1386,7 @@ function updateYear() {
 }
 
 function openDrawer(sectorId, devName) {
+  if (!isCuratedOverlayActive()) return;
   activeSectorId = sectorId;
   focusDev = devName || null;
   const sector = SECTORS.find((item) => item.id === sectorId);
@@ -1494,6 +1541,10 @@ function showToast(msg) {
 }
 
 function focusSector(sectorId, devName = null) {
+  if (!isCuratedOverlayActive()) {
+    showToast("Curated development overlays begin in 2027. The 2026 view is source-only.");
+    return;
+  }
   const sector = SECTORS.find((item) => item.id === sectorId);
   if (!sector) return;
   openDrawer(sectorId, devName);
@@ -1504,6 +1555,10 @@ function runSearch(query) {
   const term = query.trim().toLowerCase();
   document.getElementById("search-clear").style.visibility = term ? "visible" : "hidden";
   if (!term) return;
+  if (!isCuratedOverlayActive()) {
+    showToast("2026 is locked to official GIS geometry. Move to 2027+ for curated development search.");
+    return;
+  }
 
   const sectorMatch = SECTORS.find((sector) =>
     sector.name.toLowerCase().includes(term) ||
