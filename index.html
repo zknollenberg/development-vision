@@ -3,349 +3,156 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Celina, TX | Growth Explorer</title>
+  <title>Celina Deal Scout</title>
   <meta
     name="description"
-    content="An interactive development vision demo for Celina, Texas that helps home buyers, realtors, and city leaders visualize growth from 2026 to 2040."
+    content="A Celina, Texas real estate flip-finder demo that ranks public-web listings against growth catalysts, official development plans, and migration trends."
   >
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap"
-    rel="stylesheet"
-  >
-  <link
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Manrope:wght@500;700;800&display=swap"
     rel="stylesheet"
   >
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-
-  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary: "#091426",
-            secondary: "#006a61",
-            accent: "#c8952a",
-            surface: "#f8f9ff",
-            "surface-container-low": "#eff4ff",
-            surface-container: "#e5eeff",
-            "surface-container-high": "#dce9ff",
-            "surface-container-highest": "#d3e4fe",
-            "surface-container-lowest": "#ffffff",
-            "on-surface": "#0b1c30",
-            "on-surface-variant": "#45474c",
-            outline: "#75777d",
-            "outline-variant": "#c5c6cd",
-            "secondary-container": "#86f2e4",
-            "on-secondary-container": "#006f66",
-            "primary-container": "#1e293b",
-            "on-primary-container": "#8590a6"
-          },
-          fontFamily: {
-            headline: ["Plus Jakarta Sans", "sans-serif"],
-            body: ["Inter", "sans-serif"]
-          },
-          borderRadius: {
-            DEFAULT: "0.125rem",
-            sm: "0.125rem",
-            md: "0.375rem",
-            lg: "0.5rem",
-            xl: "0.75rem",
-            "2xl": "1rem",
-            full: "9999px"
-          }
-        }
-      }
-    };
-  </script>
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <header class="app-topbar">
-    <div class="flex items-center gap-10">
-      <div class="flex items-center gap-3">
-        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-[#091426] to-[#1e293b] flex items-center justify-center">
-          <span class="text-[#C8952A] text-xs font-black" style="font-family: 'Plus Jakarta Sans', sans-serif;">C</span>
-        </div>
+  <div id="app-shell">
+    <header class="topbar">
+      <div class="brand-block">
+        <div class="brand-mark">CD</div>
         <div>
-          <h1 class="font-headline font-extrabold text-primary text-base leading-tight tracking-tight">Celina Growth Explorer</h1>
-          <p class="text-[10px] font-medium text-outline uppercase tracking-[0.18em] leading-none">Development Vision Demo</p>
+          <div class="eyebrow">Celina, Texas Demo</div>
+          <h1>Deal Scout</h1>
         </div>
       </div>
 
-      <nav class="hidden lg:flex items-center gap-7 text-sm">
-        <a class="text-outline hover:text-primary transition-colors" href="#">Overview</a>
-        <a class="text-outline hover:text-primary transition-colors" href="#">Places</a>
-        <a class="text-secondary font-semibold" href="#">Analysis</a>
-        <a class="text-outline hover:text-primary transition-colors" href="#">Storytelling</a>
-      </nav>
-    </div>
+      <div class="topbar-stats" id="topbar-stats"></div>
 
-    <div class="flex items-center gap-5">
-      <div class="hidden md:flex items-center gap-5 text-xs text-on-surface-variant">
-        <div class="text-center">
-          <div class="font-headline font-bold text-primary text-sm" id="hdr-pop">~54,000</div>
-          <div class="text-[9px] uppercase tracking-wider text-outline" id="hdr-pop-label">Population</div>
+      <div class="topbar-meta">
+        <div class="snapshot-chip">
+          <span class="dot dot-live"></span>
+          <span id="snapshot-label">Nightly snapshot</span>
         </div>
-        <div class="text-center">
-          <div class="font-headline font-bold text-primary text-sm" id="hdr-schools">7</div>
-          <div class="text-[9px] uppercase tracking-wider text-outline" id="hdr-schools-label">Schools</div>
+        <button class="mobile-toggle" id="mobile-results-toggle" type="button">Deals</button>
+        <button class="mobile-toggle" id="mobile-strategy-toggle" type="button">Strategy</button>
+      </div>
+    </header>
+
+    <main id="workspace">
+      <div id="map"></div>
+
+      <section class="floating search-shell">
+        <div class="search-box">
+          <span class="search-icon">Search</span>
+          <input id="search-input" type="text" placeholder="Search address, neighborhood, or catalyst">
+          <button id="search-clear" type="button" aria-label="Clear search">Clear</button>
         </div>
-        <div class="text-center">
-          <div class="font-headline font-bold text-primary text-sm" id="hdr-new">4</div>
-          <div class="text-[9px] uppercase tracking-wider text-outline" id="hdr-new-label">New in Year</div>
-        </div>
-      </div>
+        <div class="quick-filters" id="quick-filters"></div>
+      </section>
 
-      <div class="flex items-center gap-2 bg-secondary-container/60 rounded-full px-3 py-1">
-        <span class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>
-        <span class="text-on-secondary-container font-bold text-xs font-headline" id="header-year-badge">Viewing: 2026</span>
-      </div>
-    </div>
-  </header>
-
-  <aside id="app-sidebar">
-    <div class="px-6 pt-6 pb-5">
-      <div class="text-lg font-headline font-extrabold text-primary">Map Tools</div>
-      <div class="text-xs text-outline mt-1">Editorial GIS controls</div>
-    </div>
-
-    <div class="px-4 flex-1 space-y-1.5">
-      <button class="sidebar-link" type="button">
-        <span class="material-symbols-outlined">layers</span>
-        <span>Layers</span>
-      </button>
-      <button class="sidebar-link active" type="button">
-        <span class="material-symbols-outlined">trending_up</span>
-        <span>Growth</span>
-      </button>
-      <button class="sidebar-link" type="button">
-        <span class="material-symbols-outlined">school</span>
-        <span>Schools</span>
-      </button>
-      <button class="sidebar-link" type="button">
-        <span class="material-symbols-outlined">local_hospital</span>
-        <span>Healthcare</span>
-      </button>
-      <button class="sidebar-link" type="button">
-        <span class="material-symbols-outlined">map</span>
-        <span>Zoning Story</span>
-      </button>
-    </div>
-
-    <div class="px-4 pb-5 pt-6">
-      <button class="w-full py-3 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-primary to-primary-container">
-        Export Demo Snapshot
-      </button>
-    </div>
-  </aside>
-
-  <main id="workspace">
-    <div id="map" class="absolute inset-0"></div>
-
-    <div id="map-search-shell" class="absolute top-6 left-1/2 -translate-x-1/2 z-[420]">
-      <div id="map-search" class="glass">
-        <span class="material-symbols-outlined text-outline" style="font-size:18px">search</span>
-        <input id="sector-search-input" type="text" placeholder="Search sectors, projects, or corridors...">
-        <button id="search-clear" type="button" aria-label="Clear search">
-          <span class="material-symbols-outlined" style="font-size:18px">close</span>
-        </button>
-      </div>
-    </div>
-
-    <section id="insight-panel" class="absolute left-6 z-[410] glass rounded-3xl shadow-2xl">
-      <div class="px-5 pt-5 pb-4" style="border-bottom: 1px solid rgba(9,20,38,0.06);">
-        <div class="flex items-center justify-between gap-3 mb-3">
+      <aside id="strategy-panel" class="panel strategy-panel">
+        <div class="panel-head">
           <div>
-            <p class="text-[10px] font-bold uppercase tracking-[0.18em] text-secondary">Development Vision</p>
-            <h2 class="font-headline font-extrabold text-primary text-xl leading-tight">See how growth changes the story of a place.</h2>
+            <div class="eyebrow">Investor Goal</div>
+            <h2>Score for your strategy</h2>
           </div>
-          <button id="toggle-insight-panel" class="md:hidden p-2 rounded-xl hover:bg-surface-container" type="button" aria-label="Toggle insights">
-            <span class="material-symbols-outlined" style="font-size: 18px;">close</span>
-          </button>
+          <button class="panel-close" id="strategy-close" type="button">Close</button>
         </div>
 
-        <p id="audience-description" class="text-xs leading-relaxed text-on-surface-variant">
-          Help a buyer understand what will exist around a home by move-in, not just what exists today.
-        </p>
-
-        <div class="mt-4 flex flex-wrap gap-2" id="audience-switcher">
-          <button class="audience-pill active" data-audience="buyers" type="button">Home Buyers</button>
-          <button class="audience-pill" data-audience="realtors" type="button">Realtors</button>
-          <button class="audience-pill" data-audience="cities" type="button">City Teams</button>
+        <div class="field-group">
+          <label for="goal-select">Primary goal</label>
+          <select id="goal-select"></select>
         </div>
-      </div>
 
-      <div class="px-5 py-4">
-        <div class="grid grid-cols-2 gap-3">
-          <div class="rounded-2xl bg-surface-container-lowest p-3 panel-card">
-            <div class="text-[10px] font-bold uppercase tracking-[0.15em] text-outline mb-1">Phase</div>
-            <div class="font-headline font-bold text-primary text-sm" id="insight-phase">Foundation Year</div>
-            <p class="text-[11px] text-on-surface-variant mt-2 leading-relaxed" id="insight-phase-desc"></p>
-          </div>
-          <div class="rounded-2xl bg-surface-container-lowest p-3 panel-card">
-            <div class="text-[10px] font-bold uppercase tracking-[0.15em] text-outline mb-1">Story This Year</div>
-            <div class="font-headline font-bold text-primary text-sm" id="insight-story-title">4 notable openings</div>
-            <p class="text-[11px] text-on-surface-variant mt-2 leading-relaxed" id="insight-story-body"></p>
+        <div class="field-group">
+          <label for="budget-range">Max buy price</label>
+          <input id="budget-range" type="range" min="350000" max="1200000" step="25000" value="700000">
+          <div class="field-meta">
+            <span>Budget cap</span>
+            <strong id="budget-value">$700,000</strong>
           </div>
         </div>
 
-        <div class="mt-4 rounded-2xl bg-primary text-white p-4 overflow-hidden relative">
-          <div class="absolute inset-0 insight-gradient"></div>
-          <div class="relative">
-            <div class="text-[10px] font-bold uppercase tracking-[0.15em] text-white/60 mb-1">Why This Matters</div>
-            <div class="font-headline font-bold text-lg leading-tight mb-1" id="audience-headline">Buy with a clearer picture of the next 3-5 years.</div>
-            <p class="text-xs text-white/80 leading-relaxed" id="audience-subcopy">
-              Instead of guessing whether a corridor will stay rural or turn into a major node, buyers can scrub the timeline and see projected schools, retail, healthcare, and roads.
-            </p>
+        <div class="field-group">
+          <label for="margin-range">Minimum modeled profit</label>
+          <input id="margin-range" type="range" min="0" max="125000" step="5000" value="10000">
+          <div class="field-meta">
+            <span>Flip profit floor</span>
+            <strong id="margin-value">$10,000</strong>
           </div>
         </div>
 
-        <div class="mt-4" id="curated-jump-shell">
-          <div class="flex items-center justify-between mb-2">
-            <div class="text-[10px] font-bold uppercase tracking-[0.15em] text-outline">Quick Jump</div>
-            <div class="text-[10px] text-outline">Open a sector</div>
-          </div>
-          <div id="quick-jump-list" class="flex flex-wrap gap-2"></div>
-        </div>
-      </div>
-    </section>
-
-    <button id="mobile-panel-open" class="hidden fixed left-4 top-[76px] z-[420] rounded-full bg-primary text-white px-4 py-2 shadow-xl text-xs font-semibold" type="button">
-      Show Insights
-    </button>
-
-    <section id="filter-bar-shell" class="absolute top-24 right-6 z-[405] glass rounded-3xl p-4">
-      <div class="flex items-center justify-between mb-3">
-        <div>
-          <div class="text-[10px] font-bold uppercase tracking-[0.15em] text-secondary">Map Filters</div>
-          <div class="text-xs text-outline">Toggle story layers</div>
-        </div>
-        <div class="flex items-center glass rounded-lg overflow-hidden">
-          <button class="px-3 py-1.5 text-xs font-semibold transition-all text-primary bg-surface-container-high" id="btn-sat" type="button">
-            Satellite
-          </button>
-          <button class="px-3 py-1.5 text-xs font-semibold transition-all text-outline" id="btn-street" type="button">
-            Street
-          </button>
-        </div>
-      </div>
-      <div id="filter-bar" class="flex flex-col gap-2"></div>
-      <div id="curated-filter-note" class="hidden text-xs text-outline mt-3 leading-relaxed">
-        The 2026 baseline hides inferred development overlays and shows only geometry sourced from Celina's public GIS.
-      </div>
-      <div class="mt-4 pt-4" style="border-top: 1px solid rgba(9,20,38,0.06);">
-        <div class="text-[10px] font-bold uppercase tracking-[0.15em] text-secondary mb-1">Public GIS Layers</div>
-        <div class="text-xs text-outline mb-3">Live ArcGIS layers from the City of Celina public GIS portal.</div>
-        <div id="public-layer-controls" class="flex flex-col gap-2"></div>
-        <a
-          id="gis-source-link"
-          href="https://celina-public-gis-celinatx.hub.arcgis.com/apps/e92122e2d7424c9bbfa15e2a941d633a/explore"
-          target="_blank"
-          rel="noopener"
-          class="inline-flex items-center gap-1.5 text-xs text-secondary font-semibold mt-3 hover:underline"
-        >
-          <span class="material-symbols-outlined" style="font-size:14px">open_in_new</span>
-          Open source GIS portal
-        </a>
-      </div>
-    </section>
-
-    <div
-      id="year-panel"
-      class="absolute bottom-5 z-[400] glass rounded-2xl shadow-2xl"
-      style="left: 50%; transform: translateX(-50%); min-width: 520px; max-width: calc(100vw - 32px); border: 1px solid rgba(9,20,38,0.07); padding: 20px 28px 16px;"
-    >
-      <div class="flex items-end justify-between mb-4">
-        <div>
-          <div class="text-[10px] font-bold text-secondary uppercase tracking-[0.18em] mb-1" id="phase-label">Foundation Year</div>
-          <div class="font-headline font-extrabold text-primary leading-none" style="font-size: 3rem;" id="year-display">2026</div>
-        </div>
-        <div id="delta-summary" class="text-right">
-          <div class="text-[10px] text-outline uppercase tracking-wider mb-1" id="delta-label">Opening This Year</div>
-          <div class="font-headline font-bold text-secondary text-lg" id="delta-count">-</div>
-        </div>
-      </div>
-
-      <div class="relative mb-3">
-        <input
-          type="range"
-          id="yearSlider"
-          min="2026"
-          max="2040"
-          value="2026"
-          step="1"
-          class="civic-slider w-full"
-          style="background: linear-gradient(to right, #006a61 0%, #006a61 0%, #dce9ff 0%, #dce9ff 100%);"
-        >
-      </div>
-
-      <div class="flex justify-between px-0.5">
-        <span class="text-[10px] font-semibold text-primary">2026</span>
-        <span class="text-[10px] text-outline">2028</span>
-        <span class="text-[10px] text-outline">2030</span>
-        <span class="text-[10px] text-outline">2032</span>
-        <span class="text-[10px] text-outline">2035</span>
-        <span class="text-[10px] text-outline">2038</span>
-        <span class="text-[10px] font-semibold text-outline">2040</span>
-      </div>
-
-      <div class="flex items-center gap-4 mt-3 pt-3" id="timeline-legend" style="border-top: 1px solid rgba(9,20,38,0.06);">
-        <div class="flex items-center gap-1.5 text-[10px] text-on-surface-variant">
-          <span class="w-2 h-2 rounded-full bg-[#16A34A]"></span> Open
-        </div>
-        <div class="flex items-center gap-1.5 text-[10px] text-on-surface-variant">
-          <span class="w-2 h-2 rounded-full bg-[#D97706] animate-pulse"></span> Under Construction
-        </div>
-        <div class="flex items-center gap-1.5 text-[10px] text-on-surface-variant">
-          <span class="w-2 h-2 rounded-full bg-outline-variant"></span> Planned
-        </div>
-        <div class="ml-auto text-[10px] text-outline italic">Click a highlighted zone for details</div>
-      </div>
-    </div>
-
-    <aside id="drawer">
-      <div id="drawer-header" class="px-7 pt-6 pb-4 flex-shrink-0" style="border-bottom: 1px solid rgba(9,20,38,0.06);">
-        <div class="flex items-start justify-between mb-3">
-          <div class="flex items-center gap-2">
-            <div id="drawer-cat-dot" class="w-2 h-2 rounded-full"></div>
-            <span id="drawer-cat-label" class="text-[10px] font-bold uppercase tracking-[0.18em] text-secondary"></span>
-          </div>
-          <button id="drawer-close" class="p-1.5 rounded-lg hover:bg-surface-container transition-colors text-outline hover:text-primary" type="button">
-            <span class="material-symbols-outlined" style="font-size: 18px;">close</span>
-          </button>
-        </div>
-        <h2 id="drawer-title" class="font-headline font-extrabold text-primary text-xl leading-tight mb-1"></h2>
-        <p id="drawer-tagline" class="text-xs text-on-surface-variant leading-relaxed"></p>
-
-        <div id="drawer-delta-banner" class="hidden mt-3 rounded-lg px-3 py-2 bg-secondary-container/40">
-          <div class="flex items-center gap-2">
-            <span class="material-symbols-outlined text-secondary" style="font-size: 14px;">new_releases</span>
-            <span id="drawer-delta-text" class="text-xs font-semibold text-on-secondary-container"></span>
+        <div class="field-group">
+          <label for="hold-range">Hold window</label>
+          <input id="hold-range" type="range" min="6" max="18" step="1" value="9">
+          <div class="field-meta">
+            <span>Months</span>
+            <strong id="hold-value">9 months</strong>
           </div>
         </div>
-      </div>
 
-      <div id="drawer-stats" class="px-7 py-4 grid grid-cols-3 gap-3 flex-shrink-0" style="border-bottom: 1px solid rgba(9,20,38,0.06);"></div>
-
-      <div class="flex-1 overflow-y-auto slim-scroll px-7 py-4">
-        <div id="drawer-devs"></div>
-
-        <div id="drawer-sources" class="mt-4 pt-4" style="border-top: 1px solid rgba(9,20,38,0.06);">
-          <div class="text-[10px] font-bold uppercase tracking-[0.15em] text-outline mb-3">Data Sources</div>
-          <div id="drawer-sources-list" class="flex flex-col gap-2"></div>
+        <div class="field-group">
+          <label>Rehab appetite</label>
+          <div class="segmented" id="rehab-segment"></div>
         </div>
-      </div>
-    </aside>
 
-    <div id="toast"></div>
-  </main>
+        <div class="field-group">
+          <label>Map layers</label>
+          <div class="layer-stack" id="layer-controls"></div>
+        </div>
+
+        <div class="field-group">
+          <label>Public-source stack</label>
+          <div class="source-stack" id="macro-sources"></div>
+        </div>
+
+        <div class="panel-note">
+          This demo ranks a curated shortlist of public-web listings. It is not an MLS feed and does not replace title, permit, comp, or contractor diligence.
+        </div>
+      </aside>
+
+      <aside id="results-panel" class="panel results-panel">
+        <div class="panel-head">
+          <div>
+            <div class="eyebrow">Celina Shortlist</div>
+            <h2 id="results-title">Best public-web opportunities</h2>
+          </div>
+          <button class="panel-close" id="results-close" type="button">Close</button>
+        </div>
+
+        <div class="market-grid" id="market-grid"></div>
+
+        <div class="results-meta">
+          <span id="results-count"></span>
+          <span id="results-subtitle"></span>
+        </div>
+
+        <div id="results-list" class="results-list"></div>
+      </aside>
+
+      <section id="detail-drawer" class="detail-drawer" aria-live="polite">
+        <div class="detail-head">
+          <div>
+            <div class="eyebrow" id="detail-kicker">Selected property</div>
+            <h2 id="detail-title">Choose a listing</h2>
+          </div>
+          <button id="detail-close" class="panel-close" type="button">Close</button>
+        </div>
+
+        <div id="detail-body" class="detail-body">
+          <p class="empty-state">
+            Pick a property from the shortlist to inspect the score drivers, catalyst proximity, and modeled flip scenario.
+          </p>
+        </div>
+      </section>
+    </main>
+  </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="/celina-demo-data.js"></script>
   <script src="/app.js"></script>
 </body>
 </html>
