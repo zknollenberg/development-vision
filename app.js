@@ -46,6 +46,174 @@ const AUDIENCES = {
   }
 };
 
+const PUBLIC_GIS_PORTAL_URL = "https://celina-public-gis-celinatx.hub.arcgis.com/apps/e92122e2d7424c9bbfa15e2a941d633a/explore";
+const PUBLIC_GIS_DOWNLOAD_URL = "https://www.celina-tx.gov/1412/GIS-Data-Download";
+
+const PUBLIC_GIS_LAYERS = {
+  cityLimits: {
+    label: "City Limits",
+    description: "Municipal boundary",
+    serviceUrl: "https://services1.arcgis.com/x4nhme9V33KOzAfr/arcgis/rest/services/City_Limits_Open_Data/FeatureServer",
+    layerId: 28,
+    geometryType: "polygon",
+    defaultVisible: true,
+    color: "#c8952a",
+    fillColor: "#c8952a",
+    fillOpacity: 0.02,
+    weight: 3,
+    sourceUrl: PUBLIC_GIS_PORTAL_URL,
+    popupFields: [
+      { key: "OrdinanceN", label: "Ordinance" },
+      { key: "OrdinanceD", label: "Date" },
+      { key: "sqmiles", label: "Sq Miles" },
+      { key: "AcreageGro", label: "Acreage" }
+    ]
+  },
+  etj: {
+    label: "ETJ",
+    description: "Extraterritorial jurisdiction",
+    serviceUrl: "https://services1.arcgis.com/x4nhme9V33KOzAfr/arcgis/rest/services/ETJ_Celina/FeatureServer",
+    layerId: 0,
+    geometryType: "polygon",
+    defaultVisible: false,
+    color: "#6b7280",
+    fillColor: "#94a3b8",
+    fillOpacity: 0.03,
+    weight: 2,
+    dashArray: "8 6",
+    sourceUrl: PUBLIC_GIS_PORTAL_URL,
+    popupFields: [
+      { key: "Name", label: "Name" },
+      { key: "Acres", label: "Acres" },
+      { key: "Ordinance", label: "Ordinance" },
+      { key: "Resolution", label: "Resolution" }
+    ]
+  },
+  futureLandUse: {
+    label: "Future Land Use",
+    description: "2040 planning framework",
+    serviceUrl: "https://services1.arcgis.com/x4nhme9V33KOzAfr/arcgis/rest/services/FutureLandusePlan2021/FeatureServer",
+    layerId: 0,
+    geometryType: "polygon",
+    defaultVisible: false,
+    color: "#0f766e",
+    fillColor: "#0f766e",
+    fillOpacity: 0.12,
+    weight: 1.5,
+    sourceUrl: PUBLIC_GIS_DOWNLOAD_URL,
+    popupFields: [
+      { key: "Character", label: "Character" },
+      { key: "Characte_1", label: "Category" },
+      { key: "Acreage", label: "Acreage" }
+    ]
+  },
+  subdivisions: {
+    label: "Master-Planned Communities",
+    description: "Subdivisions by development agreement",
+    serviceUrl: "https://services1.arcgis.com/x4nhme9V33KOzAfr/arcgis/rest/services/SubdivisionsbyDA/FeatureServer",
+    layerId: 0,
+    geometryType: "polygon",
+    defaultVisible: false,
+    color: "#db2777",
+    fillColor: "#db2777",
+    fillOpacity: 0.08,
+    weight: 1.5,
+    sourceUrl: PUBLIC_GIS_PORTAL_URL,
+    popupFields: [
+      { key: "Name", label: "Community" },
+      { key: "Developer", label: "Developer" },
+      { key: "Acres", label: "Acres" },
+      { key: "Date", label: "Date" }
+    ]
+  },
+  parks: {
+    label: "Parks",
+    description: "Local parks polygon layer",
+    serviceUrl: "https://services1.arcgis.com/x4nhme9V33KOzAfr/arcgis/rest/services/Parks_Local/FeatureServer",
+    layerId: 2,
+    geometryType: "polygon",
+    defaultVisible: false,
+    color: "#16a34a",
+    fillColor: "#16a34a",
+    fillOpacity: 0.16,
+    weight: 1.5,
+    sourceUrl: PUBLIC_GIS_PORTAL_URL,
+    popupFields: [
+      { key: "NAME", label: "Park" },
+      { key: "Status", label: "Status" },
+      { key: "Acres", label: "Acres" }
+    ]
+  },
+  trails: {
+    label: "Trails",
+    description: "Master plan trail network",
+    serviceUrl: "https://services1.arcgis.com/x4nhme9V33KOzAfr/arcgis/rest/services/CelinaMasterplanTrails/FeatureServer",
+    layerId: 0,
+    geometryType: "polyline",
+    defaultVisible: false,
+    color: "#059669",
+    weight: 3,
+    dashArray: "10 6",
+    sourceUrl: PUBLIC_GIS_PORTAL_URL,
+    popupFields: [
+      { key: "RefName", label: "Trail" },
+      { key: "Trail_Type", label: "Type" },
+      { key: "Entity", label: "Entity" }
+    ]
+  },
+  cip: {
+    label: "Capital Projects",
+    description: "CIP projects and phases",
+    serviceUrl: "https://services1.arcgis.com/x4nhme9V33KOzAfr/arcgis/rest/services/Infrastructure_Projects/FeatureServer",
+    layerId: 0,
+    geometryType: "polygon",
+    defaultVisible: false,
+    color: "#ea580c",
+    fillColor: "#fb923c",
+    fillOpacity: 0.12,
+    weight: 2,
+    sourceUrl: PUBLIC_GIS_PORTAL_URL,
+    popupFields: [
+      { key: "projName", label: "Project" },
+      { key: "projType", label: "Type" },
+      { key: "projPhase", label: "Phase" },
+      { key: "constructComp", label: "Construction Complete" }
+    ]
+  },
+  schools: {
+    label: "Schools",
+    description: "Existing CISD schools",
+    serviceUrl: "https://services1.arcgis.com/x4nhme9V33KOzAfr/arcgis/rest/services/CISD_Schools_Open_Data/FeatureServer",
+    layerId: 0,
+    geometryType: "point",
+    defaultVisible: false,
+    color: "#2563eb",
+    sourceUrl: PUBLIC_GIS_PORTAL_URL,
+    popupFields: [
+      { key: "POLLPLACE", label: "School" },
+      { key: "ADDRESS", label: "Address" },
+      { key: "Type", label: "Type" },
+      { key: "Status", label: "Status" }
+    ]
+  },
+  cityFacilities: {
+    label: "City Facilities",
+    description: "Government facilities",
+    serviceUrl: "https://services1.arcgis.com/x4nhme9V33KOzAfr/arcgis/rest/services/City_Facilities_Open_Data/FeatureServer",
+    layerId: 0,
+    geometryType: "point",
+    defaultVisible: false,
+    color: "#0f766e",
+    sourceUrl: PUBLIC_GIS_PORTAL_URL,
+    popupFields: [
+      { key: "Type", label: "Facility" },
+      { key: "Department", label: "Department" },
+      { key: "Address", label: "Address" },
+      { key: "Status", label: "Status" }
+    ]
+  }
+};
+
 const SECTORS = [
   {
     id: "downtown",
@@ -683,6 +851,9 @@ let activeSectorId = null;
 let activeAudience = "buyers";
 let sectorLayers = {};
 let markerLayers = {};
+let publicLayerState = Object.fromEntries(Object.entries(PUBLIC_GIS_LAYERS).map(([key, config]) => [key, !!config.defaultVisible]));
+let publicLayerLoadState = {};
+let publicMapLayers = {};
 let prevYear = 2026;
 let focusDev = null;
 let toastTimer;
@@ -920,6 +1091,36 @@ function buildFilters() {
   });
 }
 
+function makePublicLayerPill(key, config) {
+  const button = document.createElement("button");
+  const active = !!publicLayerState[key];
+  const loading = !!publicLayerLoadState[key];
+  button.type = "button";
+  button.className = `public-layer-pill ${active ? "is-active" : ""} ${loading ? "is-loading" : ""}`;
+
+  const indicator = document.createElement("span");
+  indicator.className = "public-layer-check";
+  indicator.style.background = active ? config.color : "rgba(117,119,125,0.18)";
+  indicator.innerHTML = active ? '<span class="material-symbols-outlined" style="font-size:12px">check</span>' : "";
+
+  const meta = document.createElement("span");
+  meta.className = "public-layer-meta";
+  meta.innerHTML = `<strong>${config.label}</strong><span>${loading ? "Loading layer..." : config.description}</span>`;
+
+  button.appendChild(indicator);
+  button.appendChild(meta);
+  button.addEventListener("click", () => togglePublicLayer(key));
+  return button;
+}
+
+function buildPublicLayerControls() {
+  const container = document.getElementById("public-layer-controls");
+  container.innerHTML = "";
+  Object.entries(PUBLIC_GIS_LAYERS).forEach(([key, config]) => {
+    container.appendChild(makePublicLayerPill(key, config));
+  });
+}
+
 function buildQuickJump() {
   const list = document.getElementById("quick-jump-list");
   list.innerHTML = "";
@@ -936,6 +1137,136 @@ function buildQuickJump() {
       });
       list.appendChild(button);
     });
+}
+
+function getPublicLayerQueryUrl(config) {
+  return `${config.serviceUrl}/${config.layerId}/query?where=1%3D1&outFields=*&returnGeometry=true&outSR=4326&f=geojson`;
+}
+
+function getFutureLandUseColor(value) {
+  const text = (value || "").toLowerCase();
+  if (text.includes("regional") || text.includes("employment")) return "#b45309";
+  if (text.includes("mixed")) return "#7c3aed";
+  if (text.includes("commercial")) return "#ea580c";
+  if (text.includes("industrial")) return "#475569";
+  if (text.includes("neighborhood") || text.includes("residential")) return "#db2777";
+  if (text.includes("civic") || text.includes("government")) return "#0f766e";
+  if (text.includes("open") || text.includes("park")) return "#16a34a";
+  return "#0f766e";
+}
+
+function getPublicLayerStyle(config, feature) {
+  if (config.geometryType === "polygon") {
+    if (config === PUBLIC_GIS_LAYERS.futureLandUse) {
+      const fill = getFutureLandUseColor(feature?.properties?.Character || feature?.properties?.Characte_1);
+      return {
+        color: fill,
+        fillColor: fill,
+        fillOpacity: 0.14,
+        weight: 1.25,
+        opacity: 0.7
+      };
+    }
+    return {
+      color: config.color,
+      fillColor: config.fillColor || config.color,
+      fillOpacity: config.fillOpacity ?? 0.12,
+      weight: config.weight ?? 2,
+      opacity: 0.8,
+      dashArray: config.dashArray || null
+    };
+  }
+
+  return {
+    color: config.color,
+    weight: config.weight ?? 3,
+    opacity: 0.9,
+    dashArray: config.dashArray || null
+  };
+}
+
+function formatPublicLayerValue(value) {
+  if (value === null || value === undefined || value === "") return null;
+  if (typeof value === "number") return Number.isInteger(value) ? value.toLocaleString() : value.toFixed(2);
+  return String(value);
+}
+
+function getPublicLayerPopupContent(config, properties = {}) {
+  const rows = (config.popupFields || [])
+    .map((field) => {
+      const value = formatPublicLayerValue(properties[field.key]);
+      return value ? `<div style="margin-top:6px"><div style="font-size:10px;color:#75777d;text-transform:uppercase;letter-spacing:.08em">${field.label}</div><div style="font-size:12px;color:#0b1c30;font-weight:600">${value}</div></div>` : "";
+    })
+    .filter(Boolean)
+    .join("");
+
+  return `
+    <div style="min-width:180px;font-family:Inter,sans-serif">
+      <div style="font-size:10px;color:${config.color};text-transform:uppercase;letter-spacing:.12em;font-weight:700">${config.label}</div>
+      ${rows || '<div style="font-size:12px;color:#0b1c30;font-weight:600;margin-top:6px">Public GIS feature</div>'}
+      <a href="${config.sourceUrl}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:4px;margin-top:10px;font-size:11px;font-weight:700;color:#006a61;text-decoration:none">Source portal</a>
+    </div>
+  `;
+}
+
+function createPublicMapLayer(config, geojson) {
+  return L.geoJSON(geojson, {
+    style: (feature) => getPublicLayerStyle(config, feature),
+    pointToLayer: (feature, latlng) => L.circleMarker(latlng, {
+      radius: 6,
+      color: "#ffffff",
+      weight: 1.5,
+      fillColor: config.color,
+      fillOpacity: 0.95
+    }),
+    onEachFeature: (feature, layer) => {
+      layer.bindPopup(getPublicLayerPopupContent(config, feature.properties));
+    }
+  });
+}
+
+async function ensurePublicLayerVisible(key) {
+  const config = PUBLIC_GIS_LAYERS[key];
+  if (!config) return;
+
+  if (publicMapLayers[key]) {
+    if (!map.hasLayer(publicMapLayers[key])) publicMapLayers[key].addTo(map);
+    return;
+  }
+
+  publicLayerLoadState[key] = true;
+  buildPublicLayerControls();
+
+  try {
+    const response = await fetch(getPublicLayerQueryUrl(config));
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const geojson = await response.json();
+    const layer = createPublicMapLayer(config, geojson);
+    publicMapLayers[key] = layer;
+    layer.addTo(map);
+  } catch (error) {
+    publicLayerState[key] = false;
+    showToast(`Couldn't load ${config.label}`);
+    console.error(`Failed to load ${config.label}`, error);
+  } finally {
+    publicLayerLoadState[key] = false;
+    buildPublicLayerControls();
+  }
+}
+
+function hidePublicLayer(key) {
+  const layer = publicMapLayers[key];
+  if (layer && map.hasLayer(layer)) map.removeLayer(layer);
+}
+
+function togglePublicLayer(key) {
+  publicLayerState[key] = !publicLayerState[key];
+  buildPublicLayerControls();
+  if (publicLayerState[key]) {
+    ensurePublicLayerVisible(key);
+  } else {
+    hidePublicLayer(key);
+  }
 }
 
 function renderAudiencePanel() {
@@ -1271,12 +1602,16 @@ function addTooltipOverrides() {
 function init() {
   buildSectors();
   buildFilters();
+  buildPublicLayerControls();
   buildQuickJump();
   renderAudiencePanel();
   addTooltipOverrides();
   setupEventListeners();
   updateYear();
   document.getElementById("search-clear").style.visibility = "hidden";
+  Object.entries(publicLayerState).forEach(([key, active]) => {
+    if (active) ensurePublicLayerVisible(key);
+  });
 }
 
 init();

@@ -310,6 +310,59 @@ input[type="range"].civic-slider::-webkit-slider-track {
   box-shadow: 0 8px 20px rgba(9, 20, 38, 0.08);
 }
 
+.public-layer-pill {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.8rem 0.9rem;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.7);
+  color: #0b1c30;
+  transition: all 0.18s ease;
+}
+
+.public-layer-pill:hover {
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.public-layer-pill.is-active {
+  background: rgba(220, 233, 255, 0.92);
+}
+
+.public-layer-pill.is-loading {
+  opacity: 0.72;
+}
+
+.public-layer-check {
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+
+.public-layer-meta {
+  min-width: 0;
+  flex: 1;
+}
+
+.public-layer-meta strong {
+  display: block;
+  font-size: 11px;
+  line-height: 1.2;
+}
+
+.public-layer-meta span {
+  display: block;
+  font-size: 10px;
+  color: #75777d;
+  margin-top: 0.15rem;
+}
+
 @keyframes badgePop {
   0% {
     transform: scale(0.7);
